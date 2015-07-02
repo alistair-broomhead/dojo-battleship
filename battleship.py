@@ -8,15 +8,31 @@ def get_random_pos():
 
 def get_position_from_grid(grid, last_hit):
 	if last_hit is None:
-		return get_random_pos()
-	return get_random_pos()
+		return None, get_random_pos()
+	
+	column, *row = last_hit
+	row = int(''.join(row))
+
+	for i in [-1, 0, 1]:
+		col = chr(ord(column) + i)
+		if not 'A' <= col <= 'J':
+			continue
+		for j in [-1, 0, 1]:
+			row_ = row + j
+			if not row_ in range(1, 10):
+				continue
+			pos = col + str(row_)
+			if pos not in grid:
+				return last_hit, pos
+
+	return None, get_random_pos()
 
 def main():
 	grid = {}
 	sunk = 0
 	last_hit = None
 	while sunk < 10:
-		pos = get_position_from_grid(grid, last_hit)
+		last_hit, pos = get_position_from_grid(grid, last_hit)
 		if pos in grid:
 			continue
 		print(pos)
