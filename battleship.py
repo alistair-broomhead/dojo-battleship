@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 import random
 
 VALID = {'h', 'm', 's'}
@@ -11,20 +11,24 @@ def get_position_from_grid(grid, last_hit):
 	if last_hit is None:
 		return None, get_random_pos()
 	
-	column, *row = last_hit
+	column, row = last_hit[0], last_hit[1:]
 	row = int(''.join(row))
 
-	for i in [-1, 0, 1]:
+        for i,j in (
+            (-1, 0),
+            (1, 0),
+            (0, 1),
+            (0, -1)
+        ):
 		col = chr(ord(column) + i)
 		if not 'A' <= col <= 'J':
 			continue
-		for j in [-1, 0, 1]:
-			row_ = row + j
-			if not row_ in range(1, 10):
-				continue
-			pos = col + str(row_)
-			if pos not in grid:
-				return last_hit, pos
+                row_ = row + j
+                if not row_ in range(1, 10):
+                        continue
+                pos = col + str(row_)
+                if pos not in grid:
+                        return last_hit, pos
 
 	return None, get_random_pos()
 
@@ -37,10 +41,8 @@ def main():
 		if pos in grid:
 			continue
 		print(pos)
-		answer = input().strip().lower()
-		assert answer in VALID, "'{}' is not a valid answer, expected {}".format(
-			answer, VALID)
-		if answer == 's':
+		answer = raw_input().strip().lower()
+		if answer == 's' or answer.isdigit():
 			sunk += 1
 		if answer == 'h':
 			last_hit = pos
